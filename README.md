@@ -77,3 +77,111 @@ Run 'python manage.py migrate' to apply them.
 - config
   - `url.py`
   - url을 관리하는  py. `users` 폴더안에 새로 만들어서, 설정을 새롭게 해줄수 있음.
+
+
+
+### 3. User App
+
+- Django adminstration 기본 템플릿은 주워짐.
+  - 그러면 기본템플릿을 수정, 확장하려면?
+    - User model을 만들고,
+    - 기본 셋팅으로 바꾼다.
+
+- python mange.py makemigrate - > migrate -> runserver
+
+
+
+- users.models
+
+  ```python
+  from django.contrib.auth.models import AbstractUser
+  from django.db import models
+  
+  # Create your models here.
+  
+  
+  class User(AbstractUser):
+  
+      bio = models.TextField(default="")
+  ```
+
+  - default? 데이터베이스에 기본값.
+
+  ```python
+  from django.contrib.auth.models import AbstractUser
+  from django.db import models
+  
+  # Create your models here.
+  
+  
+  class User(AbstractUser):
+  
+      """ Custom User Model """
+  
+      avatar = models.ImageField(null=True)
+      gender = models.CharField(max_length=10, null=True)
+      bio = models.TextField(default="")
+  
+  ```
+
+  - `null=True` null값을 허용하겠다.
+  - `max_length` charField 최대값
+
+
+
+- admin page display
+
+  ```python
+  from django.contrib import admin
+  from . import models
+  
+  # Register your models here.
+  @admin.register(models.User)
+  class CustomUserAdmin(admin.ModelAdmin):
+  
+      list_display = ("username", "gender", "language", "currency", "superhost")
+  
+  ```
+
+  
+
+- Custom Profile 
+
+  ```python
+  from django.contrib import admin
+  from django.contrib.auth.admin import UserAdmin
+  from . import models
+  
+  # Register your models here.
+  @admin.register(models.User)
+  class CustomUserAdmin(UserAdmin):
+  
+      """ Custom User Admin """
+  
+      # list_display = ("username", "email", "gender", "language", "currency", "superhost")
+      # list_filter = ("language", "superhost", "currency")
+  
+      fieldsets = UserAdmin.fieldsets + (
+          (
+              "Custom Profile", #  admin 셋의 파란색 패널 이름.
+              {
+                  "fields": (
+                      "avatar",
+                      "gender",
+                      "bio",
+                      "birthdate",
+                      "language",
+                      "currency",
+                      "superhost",
+                  )
+              },
+          ),
+      )
+  
+  
+  # admin.site.register(models.User, CustomUserAdmin) @admin..과 같음
+  
+  ```
+
+  - UserAdmin에서 제공하는 기본 fieldset에 추가하고 싶은, Custom profile을 추가할 수 있음.
+  - 위와 같은 식으로 표현하는 것으로 SQL 작성없이 웹페이제에서 보여줄 수 있음. 와..
