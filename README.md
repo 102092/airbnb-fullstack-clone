@@ -184,4 +184,107 @@ Run 'python manage.py migrate' to apply them.
   ```
 
   - UserAdmin에서 제공하는 기본 fieldset에 추가하고 싶은, Custom profile을 추가할 수 있음.
-  - 위와 같은 식으로 표현하는 것으로 SQL 작성없이 웹페이제에서 보여줄 수 있음. 와..
+  - 위와 같은 식으로 표현하는 것으로 SQL 작성없이 웹페이지에서 보여줄 수 있음. 편리함.
+
+
+
+### 4. Room app
+
+- `django-admin startapp core`
+
+  - 공통적으로 사용될 유틸? 기능들을 정리. 왜? 중복을 줄여주기 위해서. 조금이라도 편하게 작성하기 위해서
+
+    
+
+- `django_countries`
+
+  - [document_countries](https://pypi.org/project/django-countries/)
+
+  - Setting.py에서 Third Party App에 기록해둔다.
+
+  - 기본 django에서 제공하는 app들을 추가한 후에, 내가 이용하는 package의 app을 import해야하는 순서를 기억하자
+
+    ```python
+    #good
+    from django.db import models
+    from django_countries.fields import CountryField
+    from core import models as core_models
+    
+    from os #첫번째 파이썬
+    from django.db import models #디장고
+    from django_countries.fields import CountryField 
+    from core import models as core_models #그리고 나의 package.
+    
+    
+    
+    #bad
+    from django.db import models
+    from core import models as core_models
+    from django_countries.fields import CountryField
+    ```
+
+    
+
+- `models.TimeField(), DateTimeField(), DateField()` 
+  - 서로 다르다.
+  - 어떻게 다를까???
+  - DateField(auto_now_add=True), 옵션을 통해, 생성될 당시의 시간을 기록할 수있도록.
+- `host = models.ForeignKey(user_models.User, *on_delete*=models.CASCADE)`
+  - 외래키로 유저모델과 연결되어있네
+  - 그리고 `cascade` 옵션을 통해, user 클래스가 삭제되었을 경우, host라는 변수가 삭제될 수 있도록 하고 있는듯함.
+
+- `python manage.py createsuperuser`
+
+
+
+---
+
+
+
+#### makemigrate, migration 관련오류
+
+- 오류내역
+  - users app의 migration 폴더가 생성되지 않음
+  - 그로인하여, migrate명령어를 통해 db에 반영되지 않음.
+  - makemigrations를 해봤지만 users에 반영되지 않음을 파악.
+  - setting.py의 문제일까? 봤더니 이상없음.
+  - https://wayhome25.github.io/django/2017/03/20/django-ep6-migrations/ 를 통해, makemigrations 명령어 뒤에 users를 명칭함
+  - 성공!
+
+
+
+---
+
+
+
+- forien key
+  - many to one relationship : **many room has only one user**
+
+- ManyToManyField
+  - many to many relationship..
+  - room can have many room type
+
+- on_delete : 는 forein key option을 줄 때만 사용됨.
+
+- *on_delete*=models.SET_NULL
+  - https://lee-seul.github.io/django/backend/2018/01/28/django-model-on-delete.html
+  - 삭제되면 null값으로 바꿔준다. 그러면서 null=True을 통해, 해당 변수에 null이 들어갈 수 있도록 허용해 줘야겠지?
+
+- Class Meta :...
+
+  - https://docs.djangoproject.com/en/2.2/ref/models/options/
+
+  ```python
+  class RoomType(AbstractItem):
+  
+      """RoomType Object Definition"""
+  
+      pass
+  
+      class Meta:
+          verbose_name_plural = "Room Type" #Rooms 카데고리들어가면 보여지는 목록 이름을 바꿔주고
+          ordering = ["created"] #정렬을 생성된 대로함.
+  
+  ```
+
+  
