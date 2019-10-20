@@ -258,8 +258,9 @@ Run 'python manage.py migrate' to apply them.
 
 
 - forien key
-  - many to one relationship : **many room has only one user**
-
+  
+- many to one relationship : **many room has only one user**
+  
 - ManyToManyField
   - many to many relationship..
   - room can have many room type
@@ -288,3 +289,17 @@ Run 'python manage.py migrate' to apply them.
   ```
 
   
+
+
+
+## 5. Other Apps
+
+- 평점 셋팅
+  - foreign key 설정을 통해 각 객체간의 연결을 해줄 수 있음. 그리고 따로 데이터베이스 설정하지 않아도 장고가 알아서 찾아서 연결해줌.
+
+```python
+    def __str__(self):
+        return f"{self.review} - {self.room}"
+```
+
+- review-object가 아닌, 그 객체의 리뷰와 방의 이름이 나올것.
