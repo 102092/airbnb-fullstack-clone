@@ -83,6 +83,7 @@ class Room(core_models.TimeStampedModel):
     city = models.CharField(max_length=80)
     price = models.IntegerField()
     address = models.CharField(max_length=140)
+    guests = models.IntegerField()
     beds = models.IntegerField()
     bedrooms = models.IntegerField()
     baths = models.IntegerField()
@@ -92,7 +93,7 @@ class Room(core_models.TimeStampedModel):
     # "" 을 통해, 매개변수를 좀 더 유연하게 줄 수 있음!!
     host = models.ForeignKey("users.User", on_delete=models.CASCADE)
     room_type = models.ForeignKey(RoomType, on_delete=models.SET_NULL, null=True)
-    Amenities = models.ManyToManyField(Amenity, blank=True)
+    amenities = models.ManyToManyField(Amenity, blank=True)
     facilities = models.ManyToManyField(Facility, blank=True)
     house_rules = models.ManyToManyField(HouseRule, blank=True)
 

@@ -303,3 +303,50 @@ Run 'python manage.py migrate' to apply them.
 ```
 
 - review-object가 아닌, 그 객체의 리뷰와 방의 이름이 나올것.
+
+
+
+## 6.  Rooms admin
+
+![image-20191107112923663](README.assets/image-20191107112923663.png)
+
+```python
+@admin.register(models.Room)
+class RoomAdmin(admin.ModelAdmin):
+
+    """ Room Admin Definition """
+
+    pass
+    list_display = (
+        "name",
+        "country",
+        "city",
+        "price",
+        "guests",
+        "beds",
+        "bedrooms",
+        "baths",
+        "check_in",
+        "check_out",
+        "instant_book",
+    )
+    list_filter = ("instant_book", "city", "country")
+    search_fields = ("^city",)
+    # prefix ^ 시작, = ,@ 이렇게 있음.
+```
+
+- rooms - admin.py
+- iexact 대소문자 구분은 안하지만, 정확한 검색을 요구 할때,
+
+
+
+- filter_horizontal = ("amenities", "facilities", "house_rules")
+
+  ![image-20191107114206896](README.assets/image-20191107114206896.png)
+
+
+
+
+
+- ordering
+- admin function
