@@ -350,3 +350,30 @@ class RoomAdmin(admin.ModelAdmin):
 
 - ordering
 - admin function
+
+
+
+## 7. Model and QuerySets
+
+- model -> migrate -> db
+- 이제 알아볼 내용은 object가 어떻게 작동하는 가
+- dir(Python), vars(Python)
+  - dir -> returns class names
+
+- QuerySet
+  - list of Object from Django DB
+  - very smart list
+  - https://docs.djangoproject.com/en/2.2/ref/models/querysets/
+
+
+
+- review_set....
+  - Django 가 객체간 연관을 자동으로, 우리는 단지 foreign key 설정해줌으로인하여 만들어줌.
+  - 즉 굉장히 간편하게 객체간에 연결해줌.
+
+- related name
+- QuerySet에 대해 : https://lqez.github.io/blog/django-queryset-basic.html
+
+
+
+## 8. 
