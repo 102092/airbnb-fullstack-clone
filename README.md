@@ -376,4 +376,49 @@ class RoomAdmin(admin.ModelAdmin):
 
 
 
-## 8. 
+## 8. More Admins
+
+- method inside in the model
+  - model안에 def을 통해, 모든 곳에서 불러낼수 있는 function을 만들어 낼 수 있음.
+
+```python
+    def rating_average(self):
+        avg = (
+            self.accuracy
+            + self.communication
+            + self.cleanliness
+            + self.location
+            + self.check_in
+            + self.value
+        ) / 6
+        return round(avg, 2)
+```
+
+- review.models에
+- admin.py에서
+
+```python
+from django.contrib import admin
+from . import models
+
+# Register your models here.
+
+
+@admin.register(models.Review)
+class ReviewAdmin(admin.ModelAdmin):
+
+    """Review Admin Definition"""
+
+    list_display = ("__str__", "rating_average")
+
+```
+
+
+
+- timezone
+
+  `from django.utils import timezone`
+
+- `in_progress.boolean = True # X V 표시를 해줄수있는`
+
+- join method .. string을 생성해줌.
