@@ -422,3 +422,79 @@ class ReviewAdmin(admin.ModelAdmin):
 - `in_progress.boolean = True # X V 표시를 해줄수있는`
 
 - join method .. string을 생성해줌.
+
+- MEIAD_ROOT
+
+- settings.py 
+
+  ```python
+  DEBUG = True
+  # 개발모드라는 의미.
+  # fase, 배포모드
+  ```
+
+- 라우터 생성
+
+  ```python
+  if settings.DEBUG:
+      urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+  
+  #DEBUG 모드 이면, 즉 개발모드이면 url 패턴에 += static 패턴을 더하는 데 어떨때?
+  #settings.MEDIA_URL 이 찾을 때, document_root= settings.MEDIA_ROOT에 가서 찾도록 바꿔주는 것.
+  ```
+
+  
+
+- `from django.utils.html import mark_safe`
+
+  - django에게 html을 실행시켜도 안전하다고 알려줌. 보통은 보안때문에 바로 실행가능한 javascript 코드는 실행시키지 못하도록 막아놨음.
+
+  ```python
+  def get_thumbnail(self, obj):
+          return mark_safe(f'<img width = "50px" src="{obj.file.url}"/>')
+  
+  ```
+
+  
+
+- raw_id fields
+  - 해당 id로 검색창을 새로 만들어주는 것
+
+- inlineModelAdmin
+
+  ```python
+  class PhotoInline(admin.TabularInline):
+  
+      model = models.Photo
+  
+  @admin.register(models.Room)
+  class RoomAdmin(admin.ModelAdmin):
+  
+      """ Room Admin Definition """
+  
+      inlines = (PhotoInline,)
+  
+  ```
+
+  - foreign key의 중요성을 알 수 있는 코드.
+  - 우리가 원하는 바를 장고가 자동으로 매칭준다. 외래키를 이용해서.
+
+  
+
+- save() method
+
+- intercept
+
+  - OOP
+  - Super()
+
+  - class inside = method, outside = function
+
+  ```python
+      def save(self, *args, **kwargs):
+          print(self.city)
+          super().save()
+  ```
+
+  - save_model() 이 먼저 일어나고, 그다음에 save가 일어남.
+  - 즉 admin에 정의된 save가 먼저. 그다음에 model에 정의된 save
