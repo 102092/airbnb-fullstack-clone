@@ -14,7 +14,7 @@ class AbstractItem(core_models.TimeStampedModel):
 
     """ Abstract Item """
 
-    name = models.CharField(max_length=140)
+    name = models.CharField(max_length=80)
 
     class Meta:
         abstract = True
@@ -27,18 +27,14 @@ class RoomType(AbstractItem):
 
     """RoomType Object Definition"""
 
-    pass
-
     class Meta:
-        verbose_name_plural = "Room Type"
-        ordering = ["created"]
+        verbose_name = "Room Type"
+        # ordering = ["created"]
 
 
 class Amenity(AbstractItem):
 
     """Amenity Object Definition"""
-
-    pass
 
     class Meta:
         verbose_name_plural = "Amenities"
@@ -58,10 +54,8 @@ class HouseRule(AbstractItem):
 
     """HouseRull Model Definition"""
 
-    pass
-
     class Meta:
-        verbose_name_plural = "Houser Rule"
+        verbose_name = "Houser Rule"
 
 
 class Photo(core_models.TimeStampedModel):
@@ -107,11 +101,13 @@ class Room(core_models.TimeStampedModel):
 
     def save(self, *args, **kwargs):
         self.city = str.capitalize(self.city)
-        super().save()
+        super().save(*args, **kwargs)
 
     def total_rating(self):
         all_reviews = self.reviews.all()
         all_ratings = 0
-        for review in all_reviews:
-            all_ratings += review.rating_average()
-        return round(all_ratings / len(all_reviews), 2)
+        if len(all_reviews) > 0:
+            for review in all_reviews:
+                all_ratings += review.rating_average()
+            return round(all_ratings / len(all_reviews), 2)
+        return 0

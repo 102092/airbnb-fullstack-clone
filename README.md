@@ -498,3 +498,43 @@ class ReviewAdmin(admin.ModelAdmin):
 
   - save_model() 이 먼저 일어나고, 그다음에 save가 일어남.
   - 즉 admin에 정의된 save가 먼저. 그다음에 model에 정의된 save
+
+
+
+## 9. Custom Commnads and Seeding
+
+- seed? fake data
+- management folder
+- django_seed
+  - install 필요함.
+
+- User.objects.all() 하지말자. 왜? 장고 db에 큰 부하를 줄 수 있음. 적정량만 가져올 수 있도록 코드를 짜줘야함.
+
+```python
+    def handle(self, *args, **options):
+        number = options.get("number")
+        seeder = Seed.seeder()
+        all_users = user_models.object.all()
+        room_types = room_models.RoomType.objects.all()
+        seeder.add_entity(
+            room_models.Room,
+            number,
+            {
+                "name": lambda x: seeder.faker.address(),
+                "host": lambda x: random.choice(all_users),
+                "room_type": lambda x: random.choice(room_types),
+                "guests": lambda x: random.randint(1, 20),
+                "price": lambda x: random.randint(1, 300),
+                "beds": lambda x: random.randint(1, 5),
+                "bedrooms": lambda x: random.randint(1, 5),
+                "baths": lambda x: random.randint(1, 5),
+            },
+        )
+
+        seeder.execute()
+        self.stdout.write(self.style.SUCCESS(f"{number} rooms created!"))
+
+```
+
+- lamda 식을 이용. 들어갈 데이터를 제한해줬음.
+- faker() 가짜로 깔끔하게 생성할 수 있음.
