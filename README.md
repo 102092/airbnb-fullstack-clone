@@ -587,3 +587,41 @@ class ReviewAdmin(admin.ModelAdmin):
 
 ## 10. introduction , Views, Url
 
+- home , login, logout url to Core
+- config에거 최초 접속을 받아서, 어떤 app들로 해당 요청을 rendering 해줄지 판단하는 방법으로 만들어 나갈것.
+
+- template
+
+  render 을 통해, 서버에서 보내는 바를 바로 사용할 수 있음.
+
+```python
+from datetime import datetime
+from django.shortcuts import render
+
+# Create your views here.
+
+
+def all_rooms(request):
+    now = datetime.now()
+    hungry = True
+    return render(request, "all_rooms.html", context={"now": now, "hungry": hungry})
+
+```
+
+```html
+<h1>Hello Templates</h1>
+
+<h4>The time right now is : {{now}}</h4>
+
+<h6>
+  {% if hungry %} I'm Hungry {% else %} I'm not {% endif %}
+</h6>
+
+```
+
+- {{}} 을 이용해서
+- logic을 이용하고 싶으면 {%...%} 를 이용함.
+- python 문법과 다른점이 있기 때문에 학습이 필요하다. ,,, **{% endif % }**
+
+- block 
+  - childern content to father content
