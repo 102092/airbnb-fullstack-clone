@@ -1,5 +1,6 @@
 import random
 from django.core.management.base import BaseCommand
+from django.contrib.admin.utils import flatten
 from django_seed import Seed
 from rooms import models as room_models
 from users import models as user_models
@@ -19,6 +20,10 @@ class Command(BaseCommand):
         seeder = Seed.seeder()
         all_users = user_models.User.objects.all()
         room_types = room_models.RoomType.objects.all()
+        amenities = room_models.Amenity.objects.all()
+        rules = room_models.HouseRule.objects.all()
+        facilities = room_models.Facility.objects.all()
+
         seeder.add_entity(
             room_models.Room,
             number,
@@ -34,5 +39,31 @@ class Command(BaseCommand):
             },
         )
 
-        seeder.execute()
+        created_photos = seeder.execute()
+        # list 모양정리
+        created_clean = flatten(list(created_photos.values()))
+
+        for pk in created_clean:
+            room = room_models.Room.objects.get(pk=pk)
+            # 하나의 방에 대해서 3부터 10,17 사이의 랜덤값 까지 반복한다.
+            for i in range(3, random.randint(10, 30)):
+                room_models.Photo.objects.create(
+                    caption=seeder.faker.sentence(),
+                    room=room,
+                    file=f"room_photos/{random.randint(1,31)}.webp",
+                )
+
+            for a in amenities:
+                magic_number = random.randint(0, 15)
+                if magic_number % 2 == 0:
+                    room.amenities.add(a)  # many to many field add
+            for f in facilities:
+                magic_number = random.randint(0, 15)
+                if magic_number % 2 == 0:
+                    room.facilities.add(f)  # many to many field add
+            for r in rules:
+                magic_number = random.randint(0, 15)
+                if magic_number % 2 == 0:
+                    room.house_rules.add(r)  # many to many field add
+
         self.stdout.write(self.style.SUCCESS(f"{number} rooms created!"))

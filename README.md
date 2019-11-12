@@ -458,8 +458,9 @@ class ReviewAdmin(admin.ModelAdmin):
   
 
 - raw_id fields
-  - 해당 id로 검색창을 새로 만들어주는 것
-
+  
+- 해당 id로 검색창을 새로 만들어주는 것
+  
 - inlineModelAdmin
 
   ```python
@@ -503,7 +504,7 @@ class ReviewAdmin(admin.ModelAdmin):
 
 ## 9. Custom Commnads and Seeding
 
-- seed? fake data
+- seed? **fake data**
 - management folder
 - django_seed
   - install 필요함.
@@ -538,3 +539,51 @@ class ReviewAdmin(admin.ModelAdmin):
 
 - lamda 식을 이용. 들어갈 데이터를 제한해줬음.
 - faker() 가짜로 깔끔하게 생성할 수 있음.
+
+
+
+- many to many field add
+
+  ```python
+          created_photos = seeder.execute()
+          # list 모양정리
+          created_clean = flatten(list(created_photos.values()))
+  
+          for pk in created_clean:
+              room = room_models.Room.objects.get(pk=pk)
+              # 하나의 방에 대해서 3부터 10,17 사이의 랜덤값 까지 반복한다.
+              for i in range(3, random.randint(10, 17)):
+                  room_models.Photo.objects.create(
+                      caption=seeder.faker.sentence(),
+                      room=room,
+                      file=f"room_photos/{random.randint(1,31)}.webp",
+                  )
+  
+              for a in amenities:
+                  magic_number = random.randint(0, 15)
+                  if magic_number % 2 == 0:
+                      room.amenities.add(a)  # many to many field add
+              for f in facilities:
+                  magic_number = random.randint(0, 15)
+                  if magic_number % 2 == 0:
+                      room.facilities.add(f)  # many to many field add
+              for r in rules:
+                  magic_number = random.randint(0, 15)
+                  if magic_number % 2 == 0:
+                      room.house_rules.add(r)  # many to many field add
+  
+  ```
+
+  
+
+- managemnet folder를 통해서 faker data를 생성하는 python 파일을 만든다.
+
+- from datetime import datetime, timedelta
+  - timedelta
+
+
+
+
+
+## 10. introduction , Views, Url
+
