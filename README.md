@@ -678,8 +678,8 @@ from . import models
 
 def all_rooms(request):
     page = request.GET.get("page")
-    room_list = models.Room.objects.all()
-    paginator = Paginator(room_list, 10)
+    room_list = models.Room.objects.all() #query set
+    paginator = Paginator(room_list, 10) #2가지 인자, 첫번째꺼는 객체, 두번째거는 page number
     rooms = paginator.get_page(page)
     # print(vars(rooms.paginator))
     return render(request, "rooms/home.html", context={"rooms": rooms})
@@ -716,4 +716,33 @@ def all_rooms(request):
 
 {% endblock content %}
 ```
+
+
+
+- exception
+  - url에 이상한 page number을 줬을 때 어떻게 대처할 것인가?
+- orphans
+  - 설정한 페이지 갯수를 넘는 객체는 어떻게 대처할 것인가?
+  - 5로 설정하면, 5이하의 객체는 마지막 페이지에 합쳐 보여주고, 넘으면 새로운 페이지를 만든다.
+
+- try - except
+
+```python
+def all_rooms(request):
+    page = request.GET.get("page", 1)
+    room_list = models.Room.objects.all()
+    paginator = Paginator(room_list, 10, orphans=5)
+
+    try:
+        rooms = paginator.page(int(page))
+        return render(request, "rooms/home.html", {"page": rooms})
+    except EmptyPage:
+        return redirect("/")
+
+```
+
+
+
+- list_views
+  - class baesd view
 
