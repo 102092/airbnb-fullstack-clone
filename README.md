@@ -745,4 +745,12 @@ def all_rooms(request):
 
 - list_views
   - class baesd view
+  - https://ccbv.co.uk/
+
+- view를 만드는 방법은 2가지 있음.
+  1. function  based view: 11.6 했던바.
+     - view가 무언가 로직을 더 수행해야하면, function view를 사용해라
+  2. Class based view 11.8까지
+     - 코드 짦고
+     - get_context_data 로 쉽게 context를 전달해줄수 있음.
 
