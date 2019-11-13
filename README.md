@@ -579,6 +579,7 @@ class ReviewAdmin(admin.ModelAdmin):
 - managemnet folder를 통해서 faker data를 생성하는 python 파일을 만든다.
 
 - from datetime import datetime, timedelta
+  
   - timedelta
 
 
@@ -625,3 +626,43 @@ def all_rooms(request):
 
 - block 
   - childern content to father content
+
+
+
+## 11. Home view
+
+```python
+def all_rooms(request):
+    page = int(request.GET.get("page", 1))
+    page_size = 10
+    limit = page_size * page
+    offset = limit - page_size
+    all_rooms = models.Room.objects.all()[offset:limit]
+    return render(request, "rooms/home.html", context={"rooms": all_rooms})
+```
+
+- page 인자값을 통해, offset, limit값을 설정하는 방법
+
+- template에는 많은 로직을 사용할 수 없음.
+
+- template tag
+
+```html
+    <h5>
+    
+    {% if page is not 1 %}
+        <a href ="?page={{page|add:-1}}">Previous</a>
+    {% endif %}
+
+    Page {{page}} of {{page_count}} 
+
+    {% if not page == page_count %}
+        <a href ="?page={{page|add:+1}}">Next</a>  
+    {% endif %}   
+    </h5>        
+
+```
+
+
+
+- **paginator**
