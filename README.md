@@ -666,3 +666,54 @@ def all_rooms(request):
 
 
 - **paginator**
+
+```python
+from math import ceil
+from django.shortcuts import render
+from django.core.paginator import Paginator
+from . import models
+
+# Create your views here.
+
+
+def all_rooms(request):
+    page = request.GET.get("page")
+    room_list = models.Room.objects.all()
+    paginator = Paginator(room_list, 10)
+    rooms = paginator.get_page(page)
+    # print(vars(rooms.paginator))
+    return render(request, "rooms/home.html", context={"rooms": rooms})
+```
+
+- view.py
+
+```html
+{% extends "base.html" %} 
+
+{% block page_name %}
+    Home
+{% endblock page_name %}
+
+{% block content %} 
+    {% for room in rooms.object_list %}
+
+    <h1>{{room.name}} / ${{room.price}}</h1>
+{% endfor %} 
+
+    <h5>
+    
+    {% if rooms.has_previous %}
+        <a href ="?page={{rooms.number|add:-1}}">Previous</a>
+    {% endif %}
+
+    Page {{rooms.number}} of {{rooms.paginator.num_pages}} 
+
+    {% if rooms.has_next %}
+        <a href ="?page={{rooms.number|add:+1}}">Next</a>  
+    {% endif %}   
+    </h5>        
+
+
+{% endblock content %}
+```
+
