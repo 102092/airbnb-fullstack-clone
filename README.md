@@ -754,3 +754,69 @@ def all_rooms(request):
      - 코드 짦고
      - get_context_data 로 쉽게 context를 전달해줄수 있음.
 
+
+
+## 12. Detail view
+
+```
+Your URL pattern '/1' [name='detail'] has a route beginning with a '/'. Remove this slash as it is unnecessary. If this pattern is targeted in an include(), ensure the include() pattern has a trailing '/'.
+```
+
+- url pattern에 굳이 `/`를 넣지 않아도 됨을 경고하는 오류
+
+
+
+- Django path
+
+```html
+ <a href="{% url "core:home" %}">Nbnb</a>
+```
+
+1. config/urls.py : `path("", include("core.urls", *namespace*="core")),`
+
+2. core/urls.py 
+
+   ```python
+   app_name = "core"
+   
+   urlpatterns = [path("", room_views.HomeView.as_view(), name="home")]
+   ```
+
+3. 기본적으로
+
+   ```python
+   class HomeView(ListView):
+   
+       """ HomeView Definition"""
+   
+       model = models.Room
+       paginate_by = 10
+       paginate_orphans = 5
+       ordering = "created"
+       context_object_name = "rooms"
+   ```
+
+   - 이 클래스를 뷰로 생각하고, 이름이 home인 페이지로 감.
+
+
+
+- absoulte_url
+  - 해당 url로 이동시켜주는 method
+
+
+
+- 404 page
+
+  ```python
+  def room_detail(request, pk):
+  
+      try:
+          room = models.Room.objects.get(pk=pk)
+          return render(request, "rooms/detail.html", {"room": room})
+      except models.Room.DoesNotExist:
+          raise Http404()
+  ```
+
+  - error 는 rasie한다
+  - 404.html은 templates폴더 안에 있어야  django가 찾을 수 있음.
+
