@@ -820,3 +820,7 @@ Your URL pattern '/1' [name='detail'] has a route beginning with a '/'. Remove t
   - error 는 rasie한다
   - 404.html은 templates폴더 안에 있어야  django가 찾을 수 있음.
 
+
+
+## 13. SearchView
+
