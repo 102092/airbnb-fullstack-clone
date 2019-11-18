@@ -824,3 +824,100 @@ Your URL pattern '/1' [name='detail'] has a route beginning with a '/'. Remove t
 
 ## 13. SearchView
 
+- 굉장히 귀찮은 작업. 
+- django template 을 지원하는 formmatting이 없기에, 이것 까지 신경써야 한다. 가독성을 위해
+- 기능별로 partial 하게 나눈다.
+
+```python
+<form method="get" action="{% url "rooms:search" %}">
+ #get method를 사용하여, action시에 해당 url로 submit함
+```
+
+- app_name : rooms , name : search url로 이동
+
+```python
+from django.urls import path
+from . import views
+
+app_name = "rooms"
+
+urlpatterns = [
+    path("<int:pk>", views.RoomDetail.as_view(), name="detail"),
+    path("search/", views.search, name="search"),
+]
+```
+
+- view.search .. def를 실행
+
+```python
+from django.views.generic import ListView, DetailView
+from django.shortcuts import render
+from django_countries import countries
+from . import models
+
+
+class HomeView(ListView):
+
+    """ HomeView Definition"""
+
+    model = models.Room
+    paginate_by = 10
+    paginate_orphans = 5
+    ordering = "created"
+    context_object_name = "rooms"
+
+
+class RoomDetail(DetailView):
+
+    """ RoomDetail Definition """
+
+    model = models.Room
+
+
+def search(request):
+  #request 요청을 받아서..
+    city = request.GET.get("city", "Anywhere") #default 값은 AnyWhere
+    city = str.capitalize(city) #첫글자 대문자화
+    country = request.GET.get("country", "KR")
+    room_type = int(request.GET.get("room_type", 0))
+    price = int(request.GET.get("price", 0))
+    guests = int(request.GET.get("guests", 0))
+    bedrooms = int(request.GET.get("bedrooms", 0))
+    beds = int(request.GET.get("beds", 0))
+    baths = int(request.GET.get("baths", 0))
+    instant = request.GET.get("instant", False)
+    super_host = request.GET.get("super_host", False)
+    s_amenities = request.GET.getlist("amenities")
+    s_facilities = request.GET.getlist("facilities")
+
+    # print(s_amenities, s_facilities)
+
+    room_types = models.RoomType.objects.all()
+    amenities = models.Amenity.objects.all()
+    facilities = models.Facility.objects.all()
+
+    form = {
+        "city": city,
+        "s_room_type": room_type,
+        "s_country": country,
+        "price": price,
+        "guests": guests,
+        "bedrooms": bedrooms,
+        "beds": beds,
+        "baths": baths,
+        "s_amenities": s_amenities,
+        "s_facilities": s_facilities,
+        "instant": instant,
+        "super_host": super_host,
+    }
+    choices = {
+        "countries": countries,
+        "room_types": room_types,
+        "amenities": amenities,
+        "facilities": facilities,
+    }
+
+    return render(request, "rooms/search.html", {**form, **choices})
+  #**form , form dict을 unpack해서 render한다
+```
+

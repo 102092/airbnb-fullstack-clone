@@ -5,9 +5,8 @@
 {% endblock page_name %}
 
 {% block content %} 
-
     {{now}}
-
+    
     {% for room in rooms %}
         <h3>
             <a href="{% url "rooms:detail" room.pk %}">
