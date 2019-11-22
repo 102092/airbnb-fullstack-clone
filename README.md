@@ -921,3 +921,7 @@ def search(request):
   #**form , form dict을 unpack해서 render한다
 ```
 
+
+
+- conditional filtering
+  - String on -- > **bool()** 을 통해 바꿔줄 수 있음.
