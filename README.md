@@ -925,3 +925,36 @@ def search(request):
 
 - conditional filtering
   - String on -- > **bool()** 을 통해 바꿔줄 수 있음.
+
+
+
+- Django -- Form Field API
+
+  - forms.py
+
+  ```python
+  from django import forms
+  from django_countries.fields import CountryField
+  from . import models
+  
+  
+  class SearchForm(forms.Form):
+  
+      city = forms.CharField(initial="AnyWhere")
+      country = CountryField(default="KR").formfield()
+      room_type = forms.ModelChoiceField(
+          empty_label="Any Kind", queryset=models.RoomType.objects.all(), required=False
+      )
+      price = forms.IntegerField(required=False)
+      guests = forms.IntegerField(required=False)
+      bedrooms = forms.IntegerField(required=False)
+      beds = forms.IntegerField(required=False)
+      baths = forms.IntegerField(required=False)
+  ```
+
+  - 이전에 했던 일들이 굉장히 간단해졌다!!
+    - HTML 굉장히 빠르게 만들어주고
+    - 데이터를 한번 정제해줌
+
+
+
