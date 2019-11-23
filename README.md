@@ -958,3 +958,70 @@ def search(request):
 
 
 
+## 14. Login, Log out
+
+- Django에서 제공해주는 기능 사용
+- CSRF
+  - Cross Site Request Forgery
+  - token방식, 올바른 웹사이트에서 온 POST 방식 통신인지 확인 하는 방법
+
+- cleaned data
+
+  ```python
+  from django import forms
+  
+  
+  class LoginForm(forms.Form):
+  
+      email = forms.EmailField()
+      password = forms.CharField(widget=forms.PasswordInput)
+  
+      def clean_email(self):
+          print("email")
+  
+      def clean_password(self):
+          print("ps")
+  ```
+
+  - form.py
+
+  ```python
+  from django.views import View
+  from django.shortcuts import render
+  from . import forms
+  
+  
+  class LoginView(View):
+      def get(self, request):
+          form = forms.LoginForm(initial={"email": "eastlight@gmail.com"})
+          return render(request, "users/login.html", {"form": form})
+  
+      def post(self, request):
+          form = forms.LoginForm(request.POST)
+  
+          if form.is_valid():
+              print(form.cleaned_data) # email None, password None
+          return render(request, "users/login.html", {"form": form})
+  
+  ```
+
+  - view.py
+  - form.py 에서 def clean_password를 삭제하면 정상적으로 입력된 패스워드가 print됨
+
+
+
+- email validation
+
+  ```python
+      def clean_email(self):
+          email = self.cleaned_data.get("email")
+          print(email)
+          try:
+              models.User.objects.get(email=email)
+              return email
+          except models.User.DoesNotExist:
+              raise forms.ValidationError("User does not exist")
+  ```
+
+  
+
