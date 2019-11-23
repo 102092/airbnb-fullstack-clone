@@ -1025,3 +1025,43 @@ def search(request):
 
   
 
+- FormView
+
+  - 더 추상적인 방법
+  - 에러
+
+  ```
+  ValueError at /users/login
+  'LoginForm' has no field named 'user'.
+  ```
+
+  - LoginForm class에서 user라는 필드네임을 못찾았다. 왜?
+
+  ```python
+  from django import forms
+  from . import models
+  
+  
+  class LoginForm(forms.Form):
+  
+      email = forms.EmailField()
+      password = forms.CharField(widget=forms.PasswordInput)
+  
+      def clean(self):
+          email = self.cleaned_data.get("email")
+          password = self.cleaned_data.get("password")
+          try:
+              user = models.User.objects.get(email=email)
+              if user.check_password(password):
+                  return self.cleaned_data
+              else:
+                  self.add_error("password", forms.ValidationError("Password is Wrong"))
+          except models.User.DoesNotExist:
+              self.add_error("user", forms.ValidationError("User does not Exist"))
+  ```
+
+  - field명이 email, password
+  - 잘못 입력할 때 오류가 나오는 걸로 바탕으로 `.add_error` 여기서..?
+  - 아마도 `"user"` -> `"email"` 
+    - 필드명 매칭에서 발생하는 오류가 아닐까?
+  - 바꿔줬더니, 해결!
