@@ -23,7 +23,7 @@ pipenv install Django==2.2.5
 ```
 
 - `pipenv shell` --> to inside in bubble.
-  - 그다음에 `django` 프레임워크를 설치해야함!!(중요)
+  - 그다음에 `django` 프레임워크를 설치해야함!! **(중요)**
 
 
 
@@ -1065,3 +1065,20 @@ def search(request):
   - 아마도 `"user"` -> `"email"` 
     - 필드명 매칭에서 발생하는 오류가 아닐까?
   - 바꿔줬더니, 해결!
+
+
+
+### 15. Sign Up
+
+- `models.User.objects.create_user()`
+  
+  - 암호화된 패스워드와 함께 유저를 생성하는 방법
+  
+- `models.User.objects.create_user()` 했을 때, User 생성이 안됨. 왜그렇지?
+
+- Model_Form
+
+  - Sava method있음.
+  - Login Function에서는 추천하지 않음.
+
+  
