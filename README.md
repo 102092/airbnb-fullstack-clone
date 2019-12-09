@@ -1082,3 +1082,16 @@ def search(request):
   - Login Function에서는 추천하지 않음.
 
   
+
+
+
+### 16. Verify Email
+
+- https://signup.mailgun.com/new/signup
+- config 에 Email Configuration 설정함.
+  - Password포함되어있음..ㅠㅠ --> git에 기냥 올리면 안됨.
+
+- django-dotenv
+  - `.env`
+- 오류 `[Errno 8] nodename nor servname provided, or not known` 
+  - 와이파이오류...?
